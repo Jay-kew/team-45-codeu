@@ -12,8 +12,8 @@
     <link href="css/business-casual.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/user-page.css">
     <link rel="stylesheet" href="/css/timeline.css">
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
     <script src="/js/navigation-loader.js"></script>
@@ -23,8 +23,9 @@
   <body onload="initiateUI();">
     <!-- Website title header -->
     <h1 class="site-heading text-center text-white d-none d-lg-block">
-      <span class="site-heading-upper text-primary mb-3">Message Feed</span>
-      <span class="site-heading-lower" id="page-title">Website Name</span>
+      <span class="site-heading-upper text-primary mb-3">Great Local Food</span>
+      <span class="site-heading-lower">Fantastic Feasts</span>
+      <span class="site-heading-upper font-weight-light mt-2">(and where to find them)</span>
     </h1>
 
     <!-- Navigation bar -->
@@ -46,7 +47,8 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
-            <h2 class="section-heading text-uppercase">My posts:</h2>
+            <h2 class="section-heading text-uppercase">Public Feed:</h2>
+            <h3 id="location"></h3>
           </div>
         </div>
         <div class="row">
@@ -58,7 +60,7 @@
     <!-- Website Footer -->
     <footer class="footer text-faded text-center py-5">
       <div class="container">
-        <p class="m-0 small">Copyright &copy; Our Website 2019</p>
+        <p class="m-0 small">Copyright &copy; Fantastic Feasts 2019</p>
       </div>
     </footer>
     <!-- Bootstrap JavaScript -->

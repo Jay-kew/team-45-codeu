@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.HashMap;
 
 /** Provides access to the data stored in Datastore. */
 public class Datastore {
@@ -38,6 +39,7 @@ public class Datastore {
   /** Stores the Location in Datastore. */
   public void storeLocation(Location location){
     Entity locationEntity = new Entity("Location", location.getId());
+    locationEntity.setProperty("id", location.getId());
     locationEntity.setProperty("name", location.getName());
     locationEntity.setProperty("lat", location.getLat());
     locationEntity.setProperty("lng", location.getLng());
@@ -56,6 +58,22 @@ public class Datastore {
     messageEntity.setProperty("location_name", message.getLocationName());
 
     datastore.put(messageEntity);
+  }
+
+  public void deleteMessage(String messageId, String locationId) {
+    Key messageKey = KeyFactory.createKey("Message", messageId);
+    Key locationKey = KeyFactory.createKey("Location", locationId);
+    try{
+      datastore.delete(messageKey);
+      if(locationId.length() > 0){
+        Entity locationEntity = retrieveLocationEntity(locationId);
+        if(locationEntity != null) {
+          updateLocationCount(locationEntity, -1);
+        }
+      }
+    } catch(Exception e) {
+      System.err.println(e);
+    }
   }
 
   /**
@@ -85,6 +103,15 @@ public class Datastore {
     return prepareMessages(query);
   }
 
+  /** Return a list of messages for a location. */ 
+  public List<Message> getMessagesForLocation(String locationId) {
+    Query query = new Query("Message")
+              .setFilter(new Query.FilterPredicate("location_id", FilterOperator.EQUAL, locationId))
+              .addSort("timestamp", SortDirection.DESCENDING);
+
+    return prepareMessages(query);
+  }
+  
   public Entity retrieveLocationEntity(String id){
     Key key = KeyFactory.createKey("Location", id);
     try{
@@ -95,11 +122,15 @@ public class Datastore {
     }
   }
 
-  public void addLocationCountByOne(Entity locationEntity) {
+  public void updateLocationCount(Entity locationEntity, int increment) {
     int count = (int)(long)locationEntity.getProperty("count");
-    locationEntity.setProperty("count", ++count);
+    if(count + increment == 0) {
+      datastore.delete(locationEntity.getKey());
+    } else {
+      locationEntity.setProperty("count", count + increment);
 
-    datastore.put(locationEntity);
+      datastore.put(locationEntity);
+    }
   }
 
   /**
@@ -108,7 +139,7 @@ public class Datastore {
    * @return a location object.
    */
   public Location getLocation(Entity locationEntity){
-    String id = KeyFactory.keyToString(locationEntity.getKey());
+    String id = (String) locationEntity.getProperty("id");
     String name = (String) locationEntity.getProperty("name");
     double lat = (double) locationEntity.getProperty("lat");
     double lng = (double) locationEntity.getProperty("lng");
@@ -174,7 +205,7 @@ public class Datastore {
 
     for (Entity locationEntity : results.asIterable()) {
       try {
-        String id = KeyFactory.keyToString(locationEntity.getKey());
+        String id = (String) locationEntity.getProperty("id");
         String name = (String) locationEntity.getProperty("name");
         double lat = (double) locationEntity.getProperty("lat");
         double lng = (double) locationEntity.getProperty("lng");
@@ -198,6 +229,7 @@ public class Datastore {
     userEntity.setProperty("email", user.getEmail());
     userEntity.setProperty("aboutMe", user.getAboutMe());
     userEntity.setProperty("profilePicUrl", user.getProfilePicUrl());
+    userEntity.setProperty("nickname", user.getNickname());
     datastore.put(userEntity);
   }
 
@@ -217,7 +249,8 @@ public class Datastore {
 
     String aboutMe = (String) userEntity.getProperty("aboutMe");
     String profilePicUrl = (String) userEntity.getProperty("profilePicUrl");
-    User user = new User(email, aboutMe, profilePicUrl);
+    String nickname = (String) userEntity.getProperty("nickname");
+    User user = new User(email, aboutMe, profilePicUrl, nickname);
 
     return user;
   }
@@ -235,6 +268,24 @@ public class Datastore {
   /** Returns the total number of messages for all users. */
   public int getTotalMessageCount(){
     Query query = new Query("Message");
+    PreparedQuery results = datastore.prepare(query);
+    return results.countEntities(FetchOptions.Builder.withDefaults());
+  }
+
+  public HashMap<String, Integer> getAllUserMessageCount() {
+    HashMap<String, Integer>  userCounts = new HashMap();
+    Query query = new Query("Message");
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+      userCounts.putIfAbsent((String) entity.getProperty("user"), 0);
+      userCounts.replace((String) entity.getProperty("user"),userCounts.getOrDefault((String) entity.getProperty("user"),0) + 1);
+    }
+    return userCounts;
+  }
+
+  public int getUserMessageCount(String email) {
+    Query query = new Query("User")
+        .setFilter(new Query.FilterPredicate("email", FilterOperator.EQUAL, email));
     PreparedQuery results = datastore.prepare(query);
     return results.countEntities(FetchOptions.Builder.withDefaults());
   }

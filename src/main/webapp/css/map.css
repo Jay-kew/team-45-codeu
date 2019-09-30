@@ -4,3 +4,25 @@
   height: 500px;
   border: thin solid black;
 }
+
+.info h1 {
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.info h2 {
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.info p {
+  margin: 0;
+  line-height: 16px;
+  font-size: 12px;
+}
+
+.info img {
+  float: right;
+  width: 40%;
+  padding: 5px;
+}

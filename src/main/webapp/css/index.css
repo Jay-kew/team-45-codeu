@@ -1,0 +1,7 @@
+.cta-inner {
+  pointer-events: none;
+}
+
+.with-links {
+  pointer-events: all;
+}

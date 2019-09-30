@@ -75,7 +75,11 @@ public class MessageServlet extends HttpServlet {
   /** Stores a new {@link Message}. */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+    if(request.getParameter("messageid") != null) {
+      datastore.deleteMessage(
+        request.getParameter("messageid"), request.getParameter("locationid"));
+      return;
+    }
     UserService userService = UserServiceFactory.getUserService();
     if (!userService.isUserLoggedIn()) {
       response.sendRedirect("/index.html");
@@ -102,7 +106,7 @@ public class MessageServlet extends HttpServlet {
         datastore.storeLocation(newLocation);
       }
       else{ // count ++
-        datastore.addLocationCountByOne(locationEntity);
+        datastore.updateLocationCount(locationEntity, 1);
       }
 
       message = new Message(user, transformedText, location_id, location_name);

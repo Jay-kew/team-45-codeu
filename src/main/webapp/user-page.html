@@ -29,23 +29,24 @@ limitations under the License.
     <link href="css/business-casual.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/map.css">
-    <link rel="stylesheet" href="/css/user-page.css">
     <link rel="stylesheet" href="/css/timeline.css">
+    <link rel="stylesheet" href="/css/user-page.css">
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBawpEnaMnt7vwsqGV_SaUEW7oppEDHJvg&libraries=places"></script>
     <script src="/js/navigation-loader.js"></script>
     <script src="/js/build-message-div.js"></script>
     <script src="/js/user-page-loader.js"></script>
-    <script src="/js/map-loader.js"></script>
 
   </head>
   <body onload="initiateUI();">
   <!-- Website title header -->
     <h1 class="site-heading text-center text-white d-none d-lg-block">
-      <span class="site-heading-upper text-primary mb-3">Find Great Local Food</span>
-      <span class="site-heading-lower" id="page-title">Website Name</span>
+      <span class="site-heading-upper text-primary mb-3">Great Local Food</span>
+      <span class="site-heading-lower">Fantastic Feasts</span>
+      <span class="site-heading-upper font-weight-light mt-2">(and where to find them)</span>
     </h1>
 
     <!-- Navigation bar -->
@@ -62,74 +63,82 @@ limitations under the License.
       </div>
     </nav>
 
-    <!-- Text on background -->
-    <section class="page-section cta">
-      <div class="container">
+
+    <!-- About Me and Posts -->
+    <section class="page-section cta" id="messages">
+
+      <!-- About Me for Logged In -->
+      <div class="container hidden" id="about-me-container-logged-in">
         <div class="row">
           <div class="col-xl-9 mx-auto">
             <div class="cta-inner text-center rounded">
               <h2 class="section-heading mb-4">
-                <span class="section-heading-lower">Write a new post:</span>
+                <span class="section-heading-lower">About Me</span>
               </h2>
+              <div class="with-events text-center" id="nickname-container">
+                <p class="text-center" contenteditable="true" id="nickname-text-logged-in">Loading...</p>
+                <button type="button" class="btn btn-warning" id="nickname-save-button" onclick="setNickname()">Save Nickname</button>
+              </div>
+              <br>
+              <div class="with-events text-center" id="about-me-container">
+                <p class="text-center" contenteditable="true" id="about-me-text-logged-in">Loading...</p>
+                <button type="button" class="btn btn-warning" id="save-button" onclick="setAboutMe()">Save Introduction</button>
+              </div>
+              <div class="text-center m-3" id="profile-pic-container-logged-in">Loading...</div>
+              <div class="with-events text-center" id="profile-pic-form">
+                <form id="upload-dp" class="hidden" method="POST" enctype="multipart/form-data">
+                  <p>Upload your profile picture:</p>
+                  <input type="file" name="image">
+                  <br/><br/>
+                  <button class="btn btn-warning">Submit</button>
+                </form>
+              </div>
             </div>
-            <!-- TODO: Format the form -->
-            <form id="message-form" action="/messages" method="POST" class="hidden">
-              Enter a new message:
-              <br/>
-              <textarea name="text" id="message-input"></textarea>
-              <br/>
-              <input type="text" name="location_input" id="location_input" value="Type to search for location...">
-              <button type="button" onclick="searchLocationByText()">Search</button>
-              <br/>
-              <div id="map"></div>
-              <input type="submit" value="Submit">
-            </form>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Message display -->
-    <section class="page-section cta" id="messages">
+
+      <!-- About Me for Not Logged In -->
+      <div class="container hidden" id="about-me-container-not-logged-in">
+        <div class="row">
+          <div class="col-xl-9 mx-auto">
+            <div class="cta-inner text-center rounded">
+              <h2 class="section-heading mb-4">
+                <span class="section-heading-lower">About Me</span>
+              </h2>
+              <div class="with-events text-center">
+                <p class="text-center" id="nickname-text-not-logged-in">Loading...</p>
+                <p class="text-center" id="about-me-text-not-logged-in">Loading...</p>
+                <div class="text-center m-3" id="profile-pic-container-not-logged-in">Loading...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="text-center hidden" id="new-post">
+        <button type="button" class="btn btn-warning"  onclick="redirectToNewPost()">Click to create new post!</button>
+      </div>
+
+      <br>
+
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
             <h2 class="section-heading text-uppercase">My posts:</h2>
+            <div id="message-container">Loading...</div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-lg-12" id="message-container">Loading...</div>
-        </div>
       </div>
     </section>
-
-    <!-- TODO: Format About Me -->
-    <!-- About me -->
-    <section class="page-section cta" id="about">
-      <div id="about-me-container">Loading...</div>
-      <div id="about-me-form" class="hidden">
-        <form action="/about" method="POST">
-          <textarea name="about-me" placeholder="about me" rows=4 required></textarea>
-          <br/>
-          <input type="submit" value="Submit">
-        </form>
-      </div>
-    </section>
-    <br/>
-    <div id="profile-pic-container">No profile pic...</div>
-    <div id="profile-pic-form">
-      <form id="upload-dp" class="hidden" method="POST" enctype="multipart/form-data">
-        <p>Upload your profile picture:</p>
-        <input type="file" name="image">
-        <br/><br/>
-        <button>Submit</button>
-      </form>
-    </div>
 
   <!-- Website Footer -->
     <footer class="footer text-faded text-center py-5">
       <div class="container">
-        <p class="m-0 small">Copyright &copy; Our Website 2019</p>
+        <p class="m-0 small">Copyright &copy; Fantastic Feasts 2019</p>
       </div>
     </footer>
     <!-- Bootstrap JavaScript -->

@@ -30,11 +30,3 @@ nav li {
   display: inline-block;
   margin-right: 10px
 }
-
-.cta-inner {
-  pointer-events: none;
-}
-
-.with-links {
-  pointer-events: all;
-}

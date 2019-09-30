@@ -25,66 +25,127 @@ if (!parameterUsername) {
 
 /** Sets the page title based on the URL parameter username. */
 function setPageTitle() {
-  document.getElementById('page-title').innerText = parameterUsername;
-  document.title = parameterUsername + ' - User Page';
+  document.title = 'User Page - ' + parameterUsername;
+}
+
+function setAboutMe() {
+  var form = document.createElement("form");
+  var aboutMeText = document.createElement("input");
+  var text = document.getElementById("about-me-text-logged-in").innerText;
+  if (text==null) {text="This user has not entered self-introduction yet.";}
+
+  form.method = "POST";
+  form.action = "/about";
+
+  aboutMeText.value=text;
+  aboutMeText.name="about-me";
+  form.appendChild(aboutMeText);
+  document.body.appendChild(form);
+  form.submit();
+}
+
+function setNickname() {
+  var form = document.createElement("form");
+  var nicknameText = document.createElement("input");
+  var text = document.getElementById("nickname-text-logged-in").innerText;
+  if (text==null) {text="This user has not entered a nickname yet.";}
+
+  form.method = "POST";
+  form.action = "/nickname";
+
+  nicknameText.value=text;
+  nicknameText.name="nickname";
+  form.appendChild(nicknameText);
+  document.body.appendChild(form);
+  form.submit();
 }
 
 /**
- * Shows the message form if the user is logged in and viewing their own page.
+ * Build message form and messages depending on the user's login status.
  */
-function showMessageFormIfViewingSelf() {
-
-  document.getElementById('about-me-form').classList.remove('hidden');
-
+function checkIfViewingSelf() {
   fetch('/login-status')
-      .then((response) => {
+    .then((response) => {
         return response.json();
       })
-      .then((loginStatus) => {
-        if (loginStatus.isLoggedIn &&
-            loginStatus.username == parameterUsername) {
-          const messageForm = document.getElementById('message-form');
-          messageForm.classList.remove('hidden');
+    .then((loginStatus) => {
+      if (loginStatus.isLoggedIn &&
+          loginStatus.username == parameterUsername) {
+        document.getElementById('new-post').classList.remove('hidden');
+        document.getElementById('about-me-container-logged-in').classList.remove('hidden');
+        fetchMessages(true);
+        return '-logged-in';
+      }
+      else{
+        document.getElementById('about-me-container-not-logged-in').classList.remove('hidden');
+        fetchMessages(false);
+        return '-not-logged-in';
+      }
+    })
+    .then((statusId) => {
+
+      //fetches nickname of user from server
+      const nameUrl = '/nickname?user=' + parameterUsername;
+      fetch(nameUrl).then((response) => {
+        return response.text();
+      }).then((nickname) => {
+        const nicknameContainer = document.getElementById('nickname-text' + statusId);
+        if (!/\S/.test(nickname)) {
+          nickname = "This user has not entered a nickname yet.";
         }
+        nicknameContainer.innerHTML = nickname;
       });
-}
 
-/**Fetches About Me information of user**/
-function fetchAboutMe(){
-  const url = '/about?user=' + parameterUsername;
-  fetch(url).then((response) => {
-    return response.text();
-  }).then((aboutMe) => {
-    const aboutMeContainer = document.getElementById('about-me-container');
-    if(aboutMe == ''){
-      aboutMe = 'This user has not entered any information yet.';
-    }
+      //fetches about me information of user from server
+      const aboutUrl = '/about?user=' + parameterUsername;
+      fetch(aboutUrl).then((response) => {
+        return response.text();
+      }).then((aboutMe) => {
+        const aboutMeContainer = document.getElementById('about-me-text' + statusId);
+        if(!/\S/.test(aboutMe)){
+          aboutMe = 'This user has not entered any information yet.';
+        }
+        aboutMeContainer.innerHTML = aboutMe;
+      });
 
-    aboutMeContainer.innerHTML = aboutMe;
-
+      //fetch profile picture of user from server
+      fetchProfilePic(statusId);
   });
 }
 
 /**Fetches profile pic of user**/
-function fetchProfilePic(){
+function fetchProfilePic(statusId){
   const url = '/image-form-handler?user=' + parameterUsername;
   fetch(url).then((response) => {
     return response.text();
   }).then((profilePicUrl) => {
-    const profilePicContainer = document.getElementById('profile-pic-container');
+    const profilePicContainer = document.getElementById('profile-pic-container' + statusId);
     if(profilePicUrl == ''){
-      profilePicUrl = 'This user has not uploaded any profile picture.';
+      profilePicUrl = 'This user has not uploaded any profile picture yet.';
     }else{
-      profilePicUrl = '<img src=\"' + profilePicUrl + '\" />';
+      profilePicUrl = '<img class=\"rounded-circle square\" style=\"object-fit: cover;\" src=\"' + profilePicUrl + '\" />';
     }
-
     profilePicContainer.innerHTML = profilePicUrl;
 
   });
 }
 
+function buildNoPostsDiv(viewingSelf) {
+  var noPostsDiv = document.createElement('div');
+  noPostsDiv.id = 'noPosts';
+  var text = document.createTextNode('This user has no posts yet.');
+  if(viewingSelf){
+    text = document.createTextNode('You have no posts yet.');
+  }
+  var para = document.createElement('p');
+  para.appendChild(text);
+  noPostsDiv.appendChild(para);
+  noPostsDiv.hidden = true;
+  return noPostsDiv;
+}
+
 /** Fetches messages and add them to the page. */
-function fetchMessages() {
+function fetchMessages(viewingSelf) {
   const url = '/messages?user=' + parameterUsername;
   fetch(url)
       .then((response) => {
@@ -92,12 +153,11 @@ function fetchMessages() {
       })
       .then((messages) => {
         const messagesContainer = document.getElementById('message-container');
-        if (messages.length == 0) {
-          messagesContainer.innerHTML = '<p>This user has no posts yet.</p>';
-        } else {
-          messagesContainer.innerHTML = '';
-        }
-        messagesContainer.appendChild(buildTimeline(messages));
+        messagesContainer.innerHTML = '';
+        var noPostsDiv = buildNoPostsDiv(viewingSelf);
+        messagesContainer.appendChild(noPostsDiv);
+        if(messages.length == 0) noPostsDiv.hidden = false;
+        messagesContainer.appendChild(buildTimeline(messages,viewingSelf));
       });
 }
 
@@ -127,14 +187,13 @@ function fetchBlobstoreUrlAndShowForm() {
     });
 }
 
+function redirectToNewPost() {
+  location.href = "new-post.html";
+}
+
 /** Fetches data and populates the UI of the page. */
 function buildUI() {
   setPageTitle();
-  showMessageFormIfViewingSelf();
-  createMapForUserPage();
-  fetchMessages();
-  fetchAboutMe();
+  checkIfViewingSelf();
   fetchBlobstoreUrlAndShowForm();
-  loadMarkdownEditor();
-  fetchProfilePic();
 }

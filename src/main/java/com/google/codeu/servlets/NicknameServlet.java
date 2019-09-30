@@ -18,10 +18,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
 /**
- * Handles fetching and saving user data.
+ * Handles fetching and saving nickname of user.
  */
-@WebServlet("/about")
-public class AboutMeServlet extends HttpServlet {
+@WebServlet("/nickname")
+public class NicknameServlet extends HttpServlet {
 
   private Datastore datastore;
 
@@ -31,7 +31,7 @@ public class AboutMeServlet extends HttpServlet {
   }
 
   /**
-   * Responds with the "about me" section for a particular user.
+   * Responds with the nickname for a particular user.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -48,11 +48,11 @@ public class AboutMeServlet extends HttpServlet {
 
     User userData = datastore.getUser(user);
 
-    if(userData == null || userData.getAboutMe() == null) {
+    if(userData == null || userData.getNickname() == null) {
       return;
     }
 
-    response.getOutputStream().println(userData.getAboutMe());
+    response.getOutputStream().println(userData.getNickname());
   }
 
   @Override
@@ -66,24 +66,23 @@ public class AboutMeServlet extends HttpServlet {
     }
 
     String userEmail = userService.getCurrentUser().getEmail();
-    String aboutMe = Jsoup.clean(request.getParameter("about-me"), Whitelist.none());
-
-    System.out.println("Saving about me for " + userEmail);
 
     User userData = datastore.getUser(userEmail);
+    String aboutMe = "";
+
+    if (userData != null && userData.getAboutMe() != null) {
+      aboutMe = userData.getAboutMe();
+    }
+
     String profilePicUrl = "";
 
     if (userData != null && userData.getProfilePicUrl() != null) {
       profilePicUrl = userData.getProfilePicUrl();
     }
 
-    String nickname = "";
-    if (userData != null && userData.getNickname() != null) {
-      nickname = userData.getNickname();
-    }
+    String nickname = Jsoup.clean(request.getParameter("nickname"), Whitelist.none());
 
     User user = new User(userEmail, aboutMe, profilePicUrl, nickname);
-
     datastore.storeUser(user);
 
     response.sendRedirect("/user-page.html?user=" + userEmail);

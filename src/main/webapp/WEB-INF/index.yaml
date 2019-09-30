@@ -18,3 +18,9 @@ indexes:
   - name: user
   - name: timestamp
     direction: desc
+
+- kind: Message
+  properties:
+  - name: location_id
+  - name: timestamp
+    direction: desc

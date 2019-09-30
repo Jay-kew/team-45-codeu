@@ -2,8 +2,8 @@ function createMap(){
     document.getElementById('map').style.height = '500px';
     map = new google.maps.Map(document.getElementById('map'), {
             //the map is initially set to have a view of Singapore
-            center: {lat: 1.34, lng: 103.8},
-            zoom: 11.5
+            center: {lat: 1.34, lng: 103.83},
+            zoom: 11
         });
     showHeatMap(map);
 }
@@ -29,25 +29,39 @@ function createMarker(map, location, rank){
     const marker = new google.maps.Marker({
         position: {lat: location.lat, lng: location.lng},
         title: location.name,
-        label: String(rank),
+        label: String(location.count),
         map: map
     });
 
     var infoWindowContent = document.createElement("div");
-    var title = document.createElement("p");
-    //title.className="section-heading-upper";
-    title.appendChild(document.createTextNode(location.name));
+    infoWindowContent.classList.add('info');
+
+    var title = document.createElement("h1");
+    title.appendChild(createLocationLink(location));
     infoWindowContent.appendChild(title);
 
-    var visitCount = document.createElement("p");
+    var visitCount = document.createElement("h2");
     visitCount.appendChild(document.createTextNode(location.count + " visits by our users!"));
     infoWindowContent.appendChild(visitCount);
 
     const infoWindow = new google.maps.InfoWindow({
-        content: infoWindowContent
+        content: infoWindowContent,
+        maxWidth: 300
     });
 
     marker.addListener('click', ()=>{
         infoWindow.open(map, marker);
     });
+}
+
+function createLocationLink(location) {
+    var locationLink = document.createElement("a");
+    if(typeof location.id == 'undefined') {
+        locationLink.href = "/feed.html";
+    } else{
+        locationLink.href = "/feed.html?locationid="+location.id+"&name="+location.name;
+    }
+    locationLink.classList.add('locationLink');
+    locationLink.innerHTML = location.name;
+    return locationLink;
 }

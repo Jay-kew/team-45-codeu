@@ -1,0 +1,129 @@
+<!--
+Copyright 2019 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Page</title>
+  <meta charset="UTF-8">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <!-- Custom fonts for this template -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="css/business-casual.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+  <link rel="stylesheet" href="/css/new-post.css">
+  <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBawpEnaMnt7vwsqGV_SaUEW7oppEDHJvg&libraries=places"></script>
+  <script src="/js/navigation-loader.js"></script>
+  <script src="/js/build-message-div.js"></script>
+  <script src="/js/new-post-loader.js"></script>
+
+</head>
+<body onload="initiateUI();">
+<!-- Website title header -->
+<h1 class="site-heading text-center text-white d-none d-lg-block">
+  <span class="site-heading-upper text-primary mb-3">Find Great Local Food</span>
+  <span class="site-heading-lower" id="page-title">Write A New Post</span>
+</h1>
+
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark py-lg-4" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand text-uppercase text-expanded font-weight-bold d-lg-none" href="#">Website Name</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul id="navigation" class="navbar-nav mx-auto">
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Text on background -->
+<section class="page-section cta">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-9 mx-auto">
+        <!-- TODO: Format the form -->
+        <form id="message-form" action="/messages" method="POST">
+          Write your new post here:
+          <textarea name="text" id="message-input"></textarea>
+          <div class="hidden" id="location-message">
+            Location Chosen:
+          </div>
+          <br>
+          <!-- Map for searching for location -->
+          <div class="pac-card" id="pac-card">
+            <div>
+              <div id="type-selector" class="pac-controls">
+                <input type="radio" name="type" id="changetype-all" checked="checked">
+                <label for="changetype-all">All</label>
+
+                <input type="radio" name="type" id="changetype-establishment">
+                <label for="changetype-establishment">Establishments</label>
+
+                <input type="radio" name="type" id="changetype-address">
+                <label for="changetype-address">Addresses</label>
+
+                <input type="radio" name="type" id="changetype-geocode">
+                <label for="changetype-geocode">Geocodes</label>
+              </div>
+              <div id="strict-bounds-selector" class="pac-controls">
+                <input type="checkbox" id="use-strict-bounds" value="">
+                <label for="use-strict-bounds">Strict Bounds</label>
+              </div>
+            </div>
+            <div id="pac-container">
+              <input id="pac-input" type="text"
+                     placeholder="Enter a location">
+            </div>
+          </div>
+          <div id="map"></div>
+          <div id="infowindow-content">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" width="16" height="16" id="place-icon">
+            <span id="place-name"  class="title"></span><br>
+            <span id="place-address"></span>
+          </div>
+
+
+          <div class="text-center mt-4">
+            <input id="submit" type="submit" class="btn btn-success" value="Submit">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Website Footer -->
+<footer class="footer text-faded text-center py-5">
+  <div class="container">
+    <p class="m-0 small">Copyright &copy; Our Website 2019</p>
+  </div>
+</footer>
+<!-- Bootstrap JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -27,13 +27,13 @@ function addDefaultNavigation() {
   navigationElement.appendChild(
       createListItem(createLink('/', 'Home')));
   navigationElement.appendChild(
-      createListItem(createLink('/aboutus.html', 'About Our Team')));
-  navigationElement.appendChild(
       createListItem(createLink('/feed.html', 'Feed')));
   navigationElement.appendChild(
       createListItem(createLink('/community.html', 'Community')));
   navigationElement.appendChild(
       createListItem(createLink('/stats.html', 'Statistics')));
+  navigationElement.appendChild(
+      createListItem(createLink('/aboutus.html', 'About Our Team')));
 }
 
 /**
@@ -47,14 +47,16 @@ function addLoginOrLogoutLinkToNavigation() {
     return;
   }
 
+  const navListElements = document.getElementsByClassName("nav-item px-lg-4");
   fetch('/login-status')
       .then((response) => {
         return response.json();
       })
       .then((loginStatus) => {
         if (loginStatus.isLoggedIn) {
-          navigationElement.appendChild(createListItem(createLink(
-              '/user-page.html?user=' + loginStatus.username, 'Your Page')));
+          navigationElement.insertBefore(createListItem(createLink(
+              '/user-page.html?user=' + loginStatus.username, 'Your Page')),
+              navListElements[2]);
 
           navigationElement.appendChild(
               createListItem(createLink('/logout', 'Logout')));
@@ -66,42 +68,51 @@ function addLoginOrLogoutLinkToNavigation() {
 }
 
 function highlightCurrent() {
-  var path = window.location.pathname.replace(/\.html.*/, "");
-  var navAElements = document.getElementsByClassName("nav-link text-uppercased text-expanded");
-  var navListElements = document.getElementsByClassName("nav-item px-lg-4");
-  if (path.includes("aboutus")) {
-    navAElements[1].appendChild(createSpan());
-    navListElements[1].classList.add("active");
-  } else if (path.includes("feed")) {
-    navAElements[2].appendChild(createSpan());
-    navListElements[2].classList.add("active");
-  } else if (path.includes("community")) {
-    navAElements[3].appendChild(createSpan());
-    navListElements[3].classList.add("active");
-  } else if (path.includes("stats")) {
-    navAElements[4].appendChild(createSpan());
-    navListElements[4].classList.add("active");
-  } else if (path.includes("user-page")) {
-    var urlParams = new URLSearchParams(window.location.search);
-    var username = urlParams.get('user');
-    fetch('/login-status')
-    .then((response) => {
-      return response.json();
-    })
-    .then((loginStatus) => {
+  const path = window.location.pathname.replace(/\.html.*/, "");
+  const navAElements = document.getElementsByClassName("nav-link text-uppercased text-expanded");
+  const navListElements = document.getElementsByClassName("nav-item px-lg-4");
+  const urlParams = new URLSearchParams(window.location.search);
+  const username = urlParams.get('user');
+  
+  fetch('/login-status')
+  .then((response) => {
+    return response.json();
+  })
+  .then((loginStatus) => {
+    let index = {
+      "home" : 0,
+      "feed" : 1,
+      "user-page" : 2,
+      "community" : loginStatus.isLoggedIn ? 3 : 2,
+      "stats" : loginStatus.isLoggedIn ? 4 : 3,
+      "aboutus" : loginStatus.isLoggedIn ? 5 : 4
+    };
+
+    if (path.includes("feed")) {
+      navAElements[index["feed"]].appendChild(createSpan());
+      navListElements[index["feed"]].classList.add("active");
+    } else if (path.includes("user-page")) {
       if(loginStatus.isLoggedIn && loginStatus.username == username) {
-        navAElements[5].appendChild(createSpan());
-        navListElements[5].classList.add("active");
+        navAElements[index["user-page"]].appendChild(createSpan());
+        navListElements[index["user-page"]].classList.add("active");
       } else {
-        console.log(true);
-        navAElements[3].appendChild(createSpan());
-        navListElements[3].classList.add("active");
+        navAElements[index["community"]].appendChild(createSpan());
+        navListElements[index["community"]].classList.add("active");
       }
-    });
-  }else {
-    navAElements[0].appendChild(createSpan());
-    navListElements[0].classList.add("active");
-  }
+    } else if (path.includes("community")) {
+      navAElements[index["community"]].appendChild(createSpan());
+      navListElements[index["community"]].classList.add("active");
+    } else if (path.includes("stats")) {
+      navAElements[index["stats"]].appendChild(createSpan());
+      navListElements[index["stats"]].classList.add("active");
+    } else if (path.includes("aboutus")) {
+      navAElements[index["aboutus"]].appendChild(createSpan());
+      navListElements[index["aboutus"]].classList.add("active");
+    } else {
+      navAElements[index["home"]].appendChild(createSpan());
+      navListElements[index["home"]].classList.add("active");
+    }
+  });
 }
 
 function createSpan() {

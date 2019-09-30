@@ -25,6 +25,7 @@ limitations under the License.
     <!-- Custom fonts for this template -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css">
     <!-- Custom styles for this template -->
     <link href="css/business-casual.min.css" rel="stylesheet">
 
@@ -34,16 +35,17 @@ limitations under the License.
     <link rel="stylesheet" href="/css/map.css">
     <!-- Custom scripts for this page -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBawpEnaMnt7vwsqGV_SaUEW7oppEDHJvg"></script>
-    <script src="/js/map-loader.js"></script>
+    <script src="/js/about-us-map.js"></script>
     <script src="/js/navigation-loader.js"></script>
 
     <title>About Us</title>
   </head>
-  <body onload="initializeAboutUsPageWithMap();">
+  <body onload="initiateUI();">
     <!-- Website title header -->
     <h1 class="site-heading text-center text-white d-none d-lg-block">
-      <span class="site-heading-upper text-primary mb-3">Find Great Local Food</span>
-      <span class="site-heading-lower">Website Name</span>
+      <span class="site-heading-upper text-primary mb-3">Great Local Food</span>
+      <span class="site-heading-lower">Fantastic Feasts</span>
+      <span class="site-heading-upper font-weight-light mt-2">(and where to find them)</span>
     </h1>
 
     <!-- Navigation bar -->
@@ -72,48 +74,90 @@ limitations under the License.
                   <span class="section-heading-upper">Good Food, Great People</span>
                   <span class="section-heading-lower">About Our Team</span>
                 </h2>
-                <h2>Jingqi</h2>
-                <ul>
-                  <li>Summer Feelz: Excited!!! \^o^/, Apprehensive, Motivated</li>
-                  <li>
-                    Aspirational Hobby: Learning as many different languages as I can!
-                  </li>
-                  <li>Ask me About: Singing k with the saddest Chinese songs</li>
-                </ul>
-                <h2>Caleb Mah</h2>
-                <ul>
-                  <li>Summer Feelz:
-                    <ul>
-                      <li> Chillaxed - Spending the holidays taking a break from school.</li>
-                      <li> Productive - Somehow managing a full time internship, CodeU and other side projects!</li>
-                      <li> Dreading - I don't want to graduate later this year :(</li>
-                    </ul>
-                  </li>
-                  <li>Aspirational Hobby:
-                    <ul>
-                      <li> Skydiving or flying a plane - If I had unlimited time and money.</li>
-                      <li> Playing the drums - If I'm a little more realistic.</li>
-                    </ul>
-                  </li>
-                  <li>Ask me About:
-                    <ul>
-                      <li> Boardgames! - I love playing and have quite a sizeable collection!</li>
-                      <li> Traveling - I've travelled a fair bit and want to discover new places to explore.</li>
-                    </ul>
-                  </li>
-                </ul>
-                <h2>Yuxin Jiang</h2>
-                <ul>
-                  <li>Summer Feelz: Excited, Relaxed, Optimistic</li>
-                  <li>Aspirational Hobby: Learning fashion design</li>
-                  <li>Ask me About: Exploring food from different cultures</li>
-                </ul>
-                <h2>Shanlan Li</h2>
-                <ul>
-                  <li>Summer Feelz: Challenging, busy, but still excited!</li>
-                  <li>Aspirational Hobby: Play Jazz ~~</li>
-                  <li>Ask me About: Music! (Theories, playing an instrument, musicals, etc :p)</li>
-                </ul>
+                <p class="mb-4">Hi, we are CodeU Summer 2019 Team 45, the developers behind Fantastic Feasts! We created this site with the goal of enabling the sharing of great tasting local Singaporean food, and we hope you've found it useful! Find out more about us by hovering over the cards below:</p>
+                <div class="row justify-content-md-center">
+                  <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                    <div class="our-team rounded">
+                      <div class="picture">
+                        <img class="img-fluid" src="https://avatars1.githubusercontent.com/u/1323561?s=400&v=4">
+                      </div>
+                      <div class="team-content">
+                        <h3 class="name">Minqi Chen</h3>
+                        <h4 class="title">CodeU Program Advisor</h4>
+                      </div>
+                      <ul class="social">
+                        <li><a href="mailto:minqic@codeustudents.com" target="_blank" class="fa fa-envelope" aria-hidden="true"></a></li>
+                        <li><a href="https://github.com/BenMQ" target="_blank" class="fab fa-github" aria-hidden="true"></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                    <div class="our-team rounded">
+                      <div class="picture">
+                        <img class="img-fluid" src="img/caleb.jpg">
+                      </div>
+                      <div class="team-content">
+                        <h3 class="name">Caleb Mah</h3>
+                        <h4 class="title">CodeU Developer</h4>
+                      </div>
+                      <ul class="social">
+                        <li><a href="mailto:calebmah@gmail.com" target="_blank" class="fa fa-envelope" aria-hidden="true"></a></li>
+                        <li><a href="https://github.com/calebmah" target="_blank" class="fab fa-github" aria-hidden="true"></a></li>
+                        <li><a href="https://calebmah.me/" target="_blank" class="fa fa-globe" aria-hidden="true"></a></li>
+                        <li><a href="https://www.linkedin.com/in/caleb-mah/" target="_blank" class="fab fa-linkedin" aria-hidden="true"></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                    <div class="our-team rounded">
+                      <div class="picture">
+                        <img class="img-fluid" src="img/jingqi.jpg">
+                      </div>
+                      <div class="team-content">
+                        <h3 class="name">Jingqi Chan</h3>
+                        <h4 class="title">CodeU Developer</h4>
+                      </div>
+                      <ul class="social">
+                        <li><a href="mailto:c.jingqi@gmail.com" target="_blank" class="fa fa-envelope" aria-hidden="true"></a></li>
+                        <li><a href="https://github.com/Jay-kew" target="_blank" class="fab fa-github" aria-hidden="true"></a></li>
+                        <li><a href="https://www.linkedin.com/in/jingqi-chan-41487a176" target="_blank" class="fab fa-linkedin" aria-hidden="true"></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="row justify-content-md-center">
+                  <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                    <div class="our-team rounded">
+                      <div class="picture">
+                        <img class="img-fluid" src="/img/shanlan.jpg">
+                      </div>
+                      <div class="team-content">
+                        <h3 class="name">Shanlan Li</h3>
+                        <h4 class="title">CodeU Developer</h4>
+                      </div>
+                      <ul class="social">
+                        <li><a href="mailto:melodyli710@gmail.com" target="_blank" class="fa fa-envelope" aria-hidden="true"></a></li>
+                        <li><a href="https://github.com/LISH0038" target="_blank" class="fab fa-github" aria-hidden="true"></a></li>
+                        <li><a href="https://www.linkedin.com/in/shanlan-li-728616136/" target="_blank" class="fab fa-linkedin" aria-hidden="true"></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                    <div class="our-team rounded">
+                      <div class="picture">
+                        <img class="img-fluid" src="/img/yuxin.jpg">
+                      </div>
+                      <div class="team-content">
+                        <h3 class="name">Yuxin Jiang</h3>
+                        <h4 class="title">CodeU Developer</h4>
+                      </div>
+                      <ul class="social">
+                        <li><a href="mailto:yjiang1@codeustudents.com" target="_blank" class="fa fa-envelope" aria-hidden="true"></a></li>
+                        <li><a href="https://github.com/jyx11011" target="_blank" class="fab fa-github" aria-hidden="true"></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -148,7 +192,7 @@ limitations under the License.
     <!-- Website Footer -->
     <footer class="footer text-faded text-center py-5">
       <div class="container">
-        <p class="m-0 small">Copyright &copy; Our Website 2019</p>
+        <p class="m-0 small">Copyright &copy; Fantastic Feasts 2019</p>
       </div>
     </footer>
     <!-- Bootstrap JavaScript -->

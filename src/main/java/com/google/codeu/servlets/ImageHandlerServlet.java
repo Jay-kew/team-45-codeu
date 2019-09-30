@@ -86,7 +86,12 @@ public class ImageHandlerServlet extends HttpServlet {
 
     String profilePicUrl = imageUrl;
 
-    User user = new User(userEmail, aboutMe, profilePicUrl);
+    String nickname = "";
+    if (userData != null && userData.getNickname() != null) {
+      nickname = userData.getNickname();
+    }
+
+    User user = new User(userEmail, aboutMe, profilePicUrl, nickname);
     datastore.storeUser(user);
 
     response.sendRedirect("/user-page.html?user=" + userEmail);

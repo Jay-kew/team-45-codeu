@@ -34,7 +34,12 @@ public class MessageFeedServlet extends HttpServlet{
 
     response.setContentType("application/json");
 
-    List<Message> messages = datastore.getAllMessages();
+    List<Message> messages;
+    if(request.getParameter("locationid")!=null){
+      messages = datastore.getMessagesForLocation(request.getParameter("locationid"));
+    } else{
+      messages = datastore.getAllMessages();
+    }
     Gson gson = new Gson();
     String json = gson.toJson(messages);
 
